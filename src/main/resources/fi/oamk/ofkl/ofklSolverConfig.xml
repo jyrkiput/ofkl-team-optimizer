@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>DEBUG</environmentMode>-->
+
+  <!-- Domain model configuration -->
+  <solutionClass>fi.oamk.ofkl.domain.TeamSolution</solutionClass>
+  <planningEntityClass>fi.oamk.ofkl.domain.TeamAssignment</planningEntityClass>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_AND_SOFT</scoreDefinitionType>
+    <simpleScoreCalculatorClass>fi.oamk.ofkl.solver.score.SimpleOfklScore</simpleScoreCalculatorClass>
+  </scoreDirectorFactory>
+
+  <!-- Optimization algorithms configuration -->
+  <termination>
+    <maximumSecondsSpend>60</maximumSecondsSpend>
+  </termination>
+  <constructionHeuristic>
+    <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+    <constructionHeuristicPickEarlyType>FIRST_LAST_STEP_SCORE_EQUAL_OR_IMPROVING</constructionHeuristicPickEarlyType>
+  </constructionHeuristic>
+  <localSearch>
+      <moveListFactory>
+          <cacheType>PHASE</cacheType>
+          <moveListFactoryClass>fi.oamk.ofkl.solver.move.factory.TeamAssignmentChangeMoveFactory</moveListFactoryClass>
+      </moveListFactory>
+      <acceptor>
+      <planningEntityTabuSize>7</planningEntityTabuSize>
+    </acceptor>
+    <forager>
+      <minimalAcceptedSelection>1000</minimalAcceptedSelection>
+    </forager>
+  </localSearch>
+</solver>
