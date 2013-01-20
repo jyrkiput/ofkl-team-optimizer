@@ -1,6 +1,5 @@
 package fi.oamk.ofkl.domain;
 
-import fi.oamk.ofkl.domain.solver.MovableTeamAssignmentSelectionFilter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.drools.planner.api.domain.entity.PlanningEntity;
@@ -8,8 +7,7 @@ import org.drools.planner.api.domain.variable.PlanningVariable;
 import org.drools.planner.api.domain.variable.ValueRange;
 import org.drools.planner.api.domain.variable.ValueRangeType;
 
-@PlanningEntity(difficultyComparatorClass = TeamAssignmentDifficultyComparator.class,
-        movableEntitySelectionFilter = MovableTeamAssignmentSelectionFilter.class)
+@PlanningEntity(difficultyComparatorClass = TeamAssignmentDifficultyComparator.class)
 public class TeamAssignment {
 
     private Player player;
