@@ -105,7 +105,7 @@ public class OfklApp {
     }
 
     private static void printSolution(TeamSolution solution) {
-        int totalPoints = 0;
+        double totalPoints = 0;
         Map<Team.Level, Integer> price = Maps.newHashMap();
         Map<Team.Level, Integer> playersOnLevel = Maps.newHashMap();
 
@@ -128,13 +128,13 @@ public class OfklApp {
         System.out.println("");
         System.out.println("******************************");
         for(Player player : players) {
-            System.out.printf("%-20s %-40s %6.2f pts %2d sld \n", player.getName(), player.getTeam(), player.getPoints(), player.getPrice());
+            System.out.printf("%-20s %-40s %6.2f pts %2d sld  %5.2f pps\n", player.getName(), player.getTeam(), player.getPoints(), player.getPrice(), player.getPoints()/player.getPrice());
             totalPoints += player.getPoints();
             Integer currentPrice = price.get(player.getTeam().getLevel());
             currentPrice += player.getPrice();
             price.put(player.getTeam().getLevel(), currentPrice);
         }
-        System.out.println("Total points " + totalPoints + ", total price " + price);
+        System.out.printf("Total points %6.2f, total price %s\n", totalPoints, price);
         System.out.println(solution.getScore());
     }
 }
