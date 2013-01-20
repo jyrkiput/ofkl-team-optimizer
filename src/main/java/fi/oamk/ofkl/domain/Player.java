@@ -13,12 +13,28 @@ public class Player {
     @JsonProperty("sarja")
     private char level;
     @JsonProperty("joukkue")
-    private String team;
+    private String teamName;
     @JsonProperty("nimi")
     private String name;
+    private int hashCode;
+    private Team team;
+
+    public Player() {
+        long temp;
+        hashCode = id;
+        hashCode = 31 * hashCode + price;
+        temp = points != +0.0d ? Double.doubleToLongBits(points) : 0L;
+        hashCode = 31 * hashCode + (int) (temp ^ (temp >>> 32));
+        hashCode = 31 * hashCode + (int) level;
+        hashCode = 31 * hashCode + (team != null ? team.hashCode() : 0);
+        hashCode = 31 * hashCode + (name != null ? name.hashCode() : 0);
+    }
 
     public Team getTeam() {
-        return new Team(team, Team.Level.valueOf(Character.toString(level).toUpperCase()));
+        if(team == null) {
+            team = new Team(teamName, Team.Level.valueOf(Character.toString(level).toUpperCase()));
+        }
+        return team;
     }
 
     public int getPrice() {
@@ -56,15 +72,6 @@ public class Player {
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = id;
-        result = 31 * result + price;
-        temp = points != +0.0d ? Double.doubleToLongBits(points) : 0L;
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (int) level;
-        result = 31 * result + (team != null ? team.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return hashCode;
     }
 }

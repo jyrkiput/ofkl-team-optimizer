@@ -4,10 +4,13 @@ public class Team {
 
     private final String name;
     private final Level level;
+    private int hashCode;
 
     public Team(String name, Level level) {
         this.name = name;
         this.level = level;
+        hashCode = name != null ? name.hashCode() : 0;
+        hashCode = 31 * hashCode + (level != null ? level.hashCode() : 0);
     }
 
     public enum Level {
@@ -37,8 +40,6 @@ public class Team {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (level != null ? level.hashCode() : 0);
-        return result;
+        return hashCode;
     }
 }
