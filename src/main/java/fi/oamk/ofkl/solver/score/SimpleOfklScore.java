@@ -1,6 +1,5 @@
 package fi.oamk.ofkl.solver.score;
 
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fi.oamk.ofkl.app.OfklApp;
 import fi.oamk.ofkl.domain.Player;
@@ -11,7 +10,6 @@ import org.drools.planner.core.score.Score;
 import org.drools.planner.core.score.buildin.hardandsoft.DefaultHardAndSoftScore;
 import org.drools.planner.core.score.director.simple.SimpleScoreCalculator;
 
-import java.util.Map;
 import java.util.Set;
 
 public class SimpleOfklScore implements SimpleScoreCalculator<TeamSolution> {
@@ -22,13 +20,9 @@ public class SimpleOfklScore implements SimpleScoreCalculator<TeamSolution> {
         int points = 0;
         Set<Team> usedTeams = Sets.newHashSet();
         Set<Player> players = Sets.newHashSet();
-        Map<Team.Level, Integer> price = Maps.newHashMap();
-        Map<Team.Level, Integer> playersOnLevel = Maps.newHashMap();
-        for(Team.Level level : Team.Level.values()) {
-            playersOnLevel.put(level, 0);
-            price.put(level, 0);
-        }
 
+        Count playerCount = new Count();
+        Count priceCount = new Count();
         for(TeamAssignment t : teamSolution.getTeamAssignments()) {
             Player p = t.getPlayer();
             if(players.contains(p))
@@ -40,22 +34,34 @@ public class SimpleOfklScore implements SimpleScoreCalculator<TeamSolution> {
             }
             usedTeams.add(p.getTeam());
             Team.Level level = p.getTeam().getLevel();
-            Integer currentlyFromLevel = playersOnLevel.get(level);
-            if(currentlyFromLevel >= OfklApp.PLAYERS_ON_LEVEL) {
+            add(level, playerCount, 1);
+            add(level, priceCount, p.getPrice());
+            if(playerCount.a > OfklApp.PLAYERS_ON_LEVEL || playerCount.b > OfklApp.PLAYERS_ON_LEVEL) {
                 acceptable = -1;
             }
-            playersOnLevel.put(level, currentlyFromLevel + 1);
+            points += (int)(p.getPoints() * 100);
+        }
 
-            Integer currentPrice = price.get(p.getTeam().getLevel());
-            currentPrice += p.getPrice();
-            price.put(p.getTeam().getLevel(), currentPrice);
-            points += p.getPoints();
+        if(priceCount.a > OfklApp.MAXIMUM_PRICE_ON_LEVEL || priceCount.b > OfklApp.MAXIMUM_PRICE_ON_LEVEL) {
+            acceptable = -1;
         }
-        for(Map.Entry<Team.Level, Integer> totalPrice : price.entrySet()) {
-            if(totalPrice.getValue() > OfklApp.MAXIMUM_PRICE_ON_LEVEL) {
-                acceptable = -1;
-            }
-        }
+
         return DefaultHardAndSoftScore.valueOf(acceptable, points);
+    }
+
+    private final class Count {
+        int a = 0;
+        int b = 0;
+    }
+
+    private void add(Team.Level level, Count c, int value) {
+        switch (level) {
+            case A:
+                c.a += value;
+                break;
+            case B:
+                c.b += value;
+                break;
+        }
     }
 }
